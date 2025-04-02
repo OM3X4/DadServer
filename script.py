@@ -61,6 +61,8 @@ def extract(pdf_file_path):
                 print(areaLine)
                 areaLine = [x for x in areaLine if x]
                 Area = areaLine[4]
+                match = re.search(r"\s+([A-Za-z\s]+)\s*$" , " ".join(areaLine))
+                if match: extractedData["title"] = f"CALCULATION OF VALIDATION OF  {match.group(1)}"
             except:
                 print("Skipped")
                 # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 4].split(" ")
@@ -106,6 +108,8 @@ def push(extractedData):
             except:
                 print(f"Error at {key} {value} {dic[key][0]} {dic[key][1]}")
             dic[key][0] += 1
+
+    sheet.cell(1 , 4).value = f"CALCULATION OF VALIDATION OF {extractedData['title']}"
     workbook.save('result.xlsx')
 
 

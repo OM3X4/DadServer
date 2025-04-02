@@ -5,7 +5,6 @@ from decimal import Decimal
 import openpyxl
 import re
 from collections import defaultdict
-import io
 import os
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
@@ -47,6 +46,8 @@ def extract(pdf_file_path):
                 areaLine = page_text.split("\n")[regex(page_text)].split(" ")
                 areaLine = [x for x in areaLine if x]
                 Area = areaLine[4]
+                match = re.search(r"\s+([A-Za-z\s]+)\s*$" , " ".join(areaLine))
+                if match: extractedData["title"] = f"CALCULATION OF VALIDATION OF  {match.group(1)}"
             except:
                 print("Skipped")
                 Area = -1
@@ -96,6 +97,7 @@ def push(extractedData, excel_template):
                 print(f"Error writing to Excel for {key}: {e}")
 
     result_filename = 'result.xlsx'
+    sheet.cell(1 , 4).value = f"CALCULATION OF VALIDATION OF {extractedData['title']}"
     workbook.save(result_filename)
     return result_filename
 
