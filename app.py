@@ -44,22 +44,22 @@ def extract(pdf_file_path):
 
 def push(extractedData, excel_template):
     dic = {
-        "std50": [6, 3],
-        "std80": [6, 4],
-        "std100": [6, 5],
-        "std160": [6, 6],
-        "std200": [6, 7],
-        "t80": [17, 4],
-        "t100": [17, 5],
-        "t160": [17, 6],
-        "f1": [30, 7],
-        "f2": [30, 9],
-        "sday": [54, 8],
-        "sanalyst": [30, 4],
-        "scolumn": [43, 9],
-        "m2": [42, 5],
-        "m1": [42, 3],
-        "stability": [54, 2]
+        "st50": [6, 3],
+        "st80": [6, 4],
+        "st100": [6, 5],
+        "st160": [6, 6],
+        "st200": [6, 7],
+        "t80": [18, 4],
+        "t100": [18, 5],
+        "t160": [18, 6],
+        "f1": [32, 7],
+        "f2": [32, 9],
+        "sday": [58, 8],
+        "sanalyst": [32, 4],
+        "scolumn": [46, 9],
+        "m2": [45, 5],
+        "m1": [45, 3],
+        "stability": [58, 2]
     }
 
     workbook = openpyxl.load_workbook(excel_template)
