@@ -17,7 +17,7 @@ pattern2 = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+"
 def regex(text):
     lines = text.split("\n")
     for lineIndex in range(len(lines)):
-        if re.match(pattern, lines[lineIndex]):
+        if re.match(pattern2, lines[lineIndex]):
             return lineIndex
     return None
 
