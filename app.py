@@ -11,7 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
 
+pattern = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+(?:\s+\w+)?\s*$"
 
+def regex(text):
+    lines = text.split("\n")
+    for lineIndex in range(len(lines)):
+        if re.match(pattern, lines[lineIndex]):
+            return lineIndex
+    return None
 
 
 # Your existing script (with slight modifications if necessary)
@@ -35,10 +42,15 @@ def extract(pdf_file_path):
             sampleName = page_text.split("\n")[findLine(page_text , "Sample Name")].split(" ")
             sampleName = [x for x in sampleName if x]
             sampleName = normalize_key(sampleName[2])
-            areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
-            areaLine = [x for x in areaLine if x]
-            Area = areaLine[4]
+            try:
+                areaLine = page_text.split("\n")[regex(page_text)].split(" ")
+                areaLine = [x for x in areaLine if x]
+                Area = areaLine[4]
+            except:
+                print("Skipped")
+                Area = -1
             extractedData[sampleName].append(Area)
+            print(areaLine)
     return extractedData
 
 
