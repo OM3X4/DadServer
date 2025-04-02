@@ -8,6 +8,7 @@ from collections import defaultdict
 import io
 import os
 from fastapi.middleware.cors import CORSMiddleware
+import uuid
 
 
 
@@ -99,7 +100,7 @@ app.add_middleware(
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     # Temporary file to store the uploaded PDF
-    pdf_path = f"temp_{file.filename}"
+    pdf_path = f"temp_{uuid.uuid4}.pdf"
 
     with open(pdf_path, "wb") as f:
         f.write(await file.read())
