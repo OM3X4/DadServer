@@ -12,6 +12,7 @@ import uuid
 
 
 pattern = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+(?:\s+\w+)?\s*$"
+pattern2 = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+"
 
 def regex(text):
     lines = text.split("\n")
@@ -50,7 +51,6 @@ def extract(pdf_file_path):
                 print("Skipped")
                 Area = -1
             extractedData[sampleName].append(Area)
-            print(areaLine)
     return extractedData
 
 

@@ -5,11 +5,12 @@ import openpyxl
 from collections import defaultdict
 
 pattern = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+(?:\s+\w+)?\s*$"
+pattern2 = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+"
 
 def regex(text):
     lines = text.split("\n")
     for lineIndex in range(len(lines)):
-        if re.match(pattern, lines[lineIndex]):
+        if re.match(pattern2, lines[lineIndex]):
             return lineIndex
     return None
 
@@ -54,11 +55,14 @@ def extract(pdf_file_path):
             sampleName = normalize_key(sampleName[2])
             # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
 
+
             try:
                 areaLine = page_text.split("\n")[regex(page_text)].split(" ")
+                print(areaLine)
                 areaLine = [x for x in areaLine if x]
                 Area = areaLine[4]
             except:
+                print("Skipped")
                 # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 4].split(" ")
                 # print("Skipped")
                 # print(areaLine)
@@ -105,7 +109,7 @@ def push(extractedData):
     workbook.save('result.xlsx')
 
 
-push(extract("vald4.pdf"))
+push(extract("vald5.pdf"))
 # extract("vald2.pdf")
 # findLine("vald2.pdf" , "Sample Name")
 
