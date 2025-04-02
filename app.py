@@ -59,7 +59,7 @@ def push(extractedData, excel_template):
         "scolumn": [46, 9],
         "m2": [45, 5],
         "m1": [45, 3],
-        "stability": [58, 2]
+        "stability": [64, 2]
     }
 
     workbook = openpyxl.load_workbook(excel_template)
@@ -108,7 +108,7 @@ async def upload_file(file: UploadFile = File(...)):
         extracted_data = extract(pdf_path)
 
         # Process the extracted data and push it into the Excel template
-        result_file_name = push(extracted_data, "template2.xlsx")
+        result_file_name = push(extracted_data, "template3.xlsx")
 
         # Return the result Excel file as a response
         return FileResponse(result_file_name, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename='result.xlsx')
