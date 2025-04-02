@@ -37,7 +37,10 @@ def extract(pdf_file_path):
             sampleName = normalize_key(sampleName[2])
             areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
             areaLine = [x for x in areaLine if x]
-            Area = areaLine[4]
+            try:
+                Area = areaLine[4]
+            except:
+                pass
             extractedData[sampleName].append(Area)
     return extractedData
 
