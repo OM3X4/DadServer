@@ -15,10 +15,10 @@ import uuid
 
 
 # Your existing script (with slight modifications if necessary)
-def findLine(text, search):
+def findLine(text , search):
     for lineIndex in range(len(text.split("\n"))):
         line = text.split("\n")[lineIndex]
-        if line.startswith(search):
+        if search in line:
             return lineIndex
 
 
@@ -32,25 +32,23 @@ def extract(pdf_file_path):
     extractedData = defaultdict(list)
     with open(pdf_file_path, 'rb') as fh:
         for page_text in extract_text(fh).split("\f")[:-1]:
-            sampleName = page_text.split("\n")[findLine(page_text, "Sample Name")].split(" ")
+            sampleName = page_text.split("\n")[findLine(page_text , "Sample Name")].split(" ")
             sampleName = [x for x in sampleName if x]
             sampleName = normalize_key(sampleName[2])
-
-            areaLine = page_text.split("\n")[findLine(page_text, "RetTime") + 3].split(" ")
+            areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
             areaLine = [x for x in areaLine if x]
-            Area = areaLine[2]
-
+            Area = areaLine[4]
             extractedData[sampleName].append(Area)
     return extractedData
 
 
 def push(extractedData, excel_template):
     dic = {
-        "st50": [6, 3],
-        "st80": [6, 4],
-        "st100": [6, 5],
-        "st160": [6, 6],
-        "st200": [6, 7],
+        "std50": [6, 3],
+        "std80": [6, 4],
+        "std100": [6, 5],
+        "std160": [6, 6],
+        "std200": [6, 7],
         "t80": [17, 4],
         "t100": [17, 5],
         "t160": [17, 6],
@@ -100,7 +98,7 @@ app.add_middleware(
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     # Temporary file to store the uploaded PDF
-    pdf_path = f"temp_{uuid.uuid4}.pdf"
+    pdf_path = f"temp_{uuid.uuid4().hex}.pdf"
 
     with open(pdf_path, "wb") as f:
         f.write(await file.read())
@@ -110,7 +108,7 @@ async def upload_file(file: UploadFile = File(...)):
         extracted_data = extract(pdf_path)
 
         # Process the extracted data and push it into the Excel template
-        result_file_name = push(extracted_data, "template.xlsx")
+        result_file_name = push(extracted_data, "template2.xlsx")
 
         # Return the result Excel file as a response
         return FileResponse(result_file_name, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename='result.xlsx')
