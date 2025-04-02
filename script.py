@@ -60,11 +60,10 @@ def extract(pdf_file_path):
                 Area = areaLine[4]
             except:
                 # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 4].split(" ")
-                print("Skipped")
-                print(areaLine)
+                # print("Skipped")
+                # print(areaLine)
                 Area = -1
             extractedData[sampleName].append(Area)
-            print(areaLine)
     return extractedData
 
 # print(extract("vald4.pdf"))
@@ -87,11 +86,11 @@ def push(extractedData):
         "scolumn": [46, 9],
         "m2": [45, 5],
         "m1": [45, 3],
-        "stability": [58, 2]
+        "stability": [64, 3]
     }
 
 
-    workbook = openpyxl.load_workbook('template2.xlsx')
+    workbook = openpyxl.load_workbook('template3.xlsx')
     sheet = workbook.active
 
     for key, values in extractedData.items():

@@ -76,7 +76,7 @@ def push(extractedData, excel_template):
         "scolumn": [46, 9],
         "m2": [45, 5],
         "m1": [45, 3],
-        "stability": [64, 2]
+        "stability": [64, 3]
     }
 
     workbook = openpyxl.load_workbook(excel_template)
