@@ -45,7 +45,10 @@ def extract(pdf_file_path):
             sampleName = normalize_key(sampleName[2])
             areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
             areaLine = [x for x in areaLine if x]
-            Area = areaLine[4]
+            try:
+                Area = areaLine[4]
+            except:
+                pass
             extractedData[sampleName].append(Area)
     return extractedData
 
@@ -88,11 +91,11 @@ def push(extractedData):
     workbook.save('result.xlsx')
 
 
-push(extract("vald3.pdf"))
+push(extract("vald4.pdf"))
 # extract("vald2.pdf")
 # findLine("vald2.pdf" , "Sample Name")
 
-# with open("vald2.pdf", 'rb') as fh:
+# with open("vald4.pdf", 'rb') as fh:
 #         for page_text in extract_text(fh).split("\f")[:-1]:
 #             # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
 #             areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
