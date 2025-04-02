@@ -4,6 +4,15 @@ from decimal import Decimal
 import openpyxl
 from collections import defaultdict
 
+pattern = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+(?:\s+\w+)?\s*$"
+
+def regex(text):
+    lines = text.split("\n")
+    for lineIndex in range(len(lines)):
+        if re.match(pattern, lines[lineIndex]):
+            return lineIndex
+    return None
+
 
 def findLine(text , search):
     for lineIndex in range(len(text.split("\n"))):
@@ -43,16 +52,22 @@ def extract(pdf_file_path):
             sampleName = page_text.split("\n")[findLine(page_text , "Sample Name")].split(" ")
             sampleName = [x for x in sampleName if x]
             sampleName = normalize_key(sampleName[2])
-            areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
-            areaLine = [x for x in areaLine if x]
+            # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 3].split(" ")
+
             try:
+                areaLine = page_text.split("\n")[regex(page_text)].split(" ")
+                areaLine = [x for x in areaLine if x]
                 Area = areaLine[4]
             except:
-                pass
+                # areaLine = page_text.split("\n")[findLine(page_text , "RetTime") + 4].split(" ")
+                print("Skipped")
+                print(areaLine)
+                Area = -1
             extractedData[sampleName].append(Area)
+            print(areaLine)
     return extractedData
 
-# print(extract("vald3.pdf"))
+# print(extract("vald4.pdf"))
 
 def push(extractedData):
 
