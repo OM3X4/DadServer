@@ -117,6 +117,9 @@ def push(extractedData):
                     print(f"Error at {key} {value} {dic[key][0]} {dic[key][1]}")
                 dic[key][0] += 1
 
+    workbook.save('result.xlsx')
+    return 'result.xlsx'
+
 app = FastAPI()
 
 
@@ -142,10 +145,10 @@ async def upload_file(file: UploadFile = File(...)):
         extracted_data = extract(pdf_path)
 
         # Process the extracted data and push it into the Excel template
-        result_file_name = push(extracted_data, "template3.xlsx")
+        result_file_name = push(extracted_data)
 
         # Return the result Excel file as a response
-        return FileResponse(result_file_name, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename='result.xlsx')
+        return FileResponse(result_file_name, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename="result.xlsx")
 
     finally:
         # Clean up the temporary PDF file
