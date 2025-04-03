@@ -18,7 +18,7 @@ def regex(text):
     lines = text.split("\n")
     matching_indices = []  # List to store indices of matching lines
     for lineIndex in range(len(lines)):
-        if re.match(pattern2, lines[lineIndex]):  # If the pattern matches
+        if re.match(pattern2, lines[lineIndex]) or re.match(r"Totals\s*:\s*([\d.]+)" , lines[lineIndex]):  # If the pattern matches
             matching_indices.append(lineIndex)  # Add the index to the list
     return matching_indices  # Return the list of indices
 
@@ -38,7 +38,7 @@ def normalize_key(key: str) -> str:
     return normalized_key
 
 def extract(pdf_file_path):
-    titles = ["" for x in range(4)]
+    titles = ["" for x in range(5)]
     result = []
     with open(pdf_file_path, 'rb') as fh:
         for page_text in extract_text(fh).split("\f")[:-1]:
@@ -52,9 +52,15 @@ def extract(pdf_file_path):
                 for i in range(len(indecies)):
                     areaLine = page_text.split("\n")[indecies[i]].split(" ")
                     areaLine = [x for x in areaLine if x]
-                    Area = areaLine[4]
-                    match = re.search(r"\s+([A-Za-z\s]+)\s*$" , " ".join(areaLine))
-                    if match: titles[i] = match.group(1)
+                    try:
+                        Area = areaLine[4]
+                        match = re.search(r"\s+([A-Za-z\s]+)\s*$" , " ".join(areaLine))
+                        if match: titles[i] = match.group(1)
+                    except:
+                        print("total" ,sampleName , areaLine[0] , areaLine[2] )
+                        Area = areaLine[2]
+                        titles[-1] = areaLine[0]
+
                     injections.append(Area)
             except Exception as e:
                 print("skipped" , e)
