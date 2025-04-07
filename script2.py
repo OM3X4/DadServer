@@ -9,11 +9,13 @@ import uuid
 
 
 def regex(text):
+    pattern4 = r"^(?!.*\?).*\s*\d+\s+\d+\.\d+\s+[\w\s]+\s+\d+\.\d+\s+\d+\.\d+"
+    pattern3 = r"^\s*\d+\s+\d+\.\d+\s+[\w\s]+\s+\d+\.\d+\s+\d+\.\d+"
     pattern2 = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+"
     lines = text.split("\n")
     matching_indices = []  # List to store indices of matching lines
     for lineIndex in range(len(lines)):
-        if re.match(pattern2, lines[lineIndex]) or re.match(r"Totals\s*:\s*([\d.]+)" , lines[lineIndex]):  # If the pattern matches
+        if re.match(pattern4, lines[lineIndex]) or re.match(r"Totals\s*:\s*([\d.]+)" , lines[lineIndex]):  # If the pattern matches
             matching_indices.append(lineIndex)  # Add the index to the list
     return matching_indices  # Return the list of indices
 
@@ -33,7 +35,7 @@ def normalize_key(key: str) -> str:
     return normalized_key
 
 def extract(pdf_file_path):
-    titles = ["" for x in range(5)]
+    titles = ["" for _ in range(5)]
     result = []
     with open(pdf_file_path, 'rb') as fh:
         for page_text in extract_text(fh).split("\f")[:-1]:
@@ -44,17 +46,20 @@ def extract(pdf_file_path):
             injections = []
             try:
                 indecies = regex(page_text)
+                print(sampleName)
                 for i in range(len(indecies)):
                     areaLine = page_text.split("\n")[indecies[i]].split(" ")
                     areaLine = [x for x in areaLine if x]
+                    areaLine2 = [x for x in areaLine if x.replace('.', '', 1).isdigit() and x.count('.') <= 1]
+                    print(areaLine)
                     try:
-                        Area = areaLine[4]
+                        Area = areaLine2[3]
                         match = re.search(r"\s+([A-Za-z\s]+)\s*$" , " ".join(areaLine))
                         if match: titles[i] = match.group(1)
+
                     except:
-                        print("total" ,sampleName , areaLine[0] , areaLine[2] )
                         Area = areaLine[2]
-                        titles[-1] = areaLine[0]
+                        titles[-1] = "Totals"
 
                     injections.append(Area)
             except Exception as e:
@@ -120,5 +125,5 @@ def push(extractedData):
 
     workbook.save('result.xlsx')
 
-push(extract("vald4.pdf"))
+push(extract("vald6.pdf"))
 print("done")
