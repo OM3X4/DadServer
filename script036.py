@@ -53,6 +53,7 @@ def push(pdf_path , number):
     standardStart = [5 , 2]
     batchNameStart = [3 , 4]
     areaStart = [4 , 5]
+    ogareaStartCol = 5
 
     if number == "3" :
         standardStart = [18 , 2]
@@ -93,8 +94,9 @@ def push(pdf_path , number):
                 areaStart[1] += 1
             except:
                 print("error at " + areaStart)
+        areaStart[1] = ogareaStartCol
         areaStart[0] += 2
 
     workbook.save("result036.xlsx")
 
-# push("6m.pdf" , "3")
+push("6m.pdf" , "3")
