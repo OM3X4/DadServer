@@ -9,6 +9,8 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
 
+from app036 import push as push036
+
 
 pattern = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+(?:\s+\w+)?\s*$"
 pattern2 = r"^\s*\d+\s+\d+\.\d+\s+\w+\s+\d+\.\d+\s+\d+\.\d+"
@@ -269,6 +271,27 @@ async def upload_file(file: UploadFile = File(...)):
 
         # Process the extracted data and push it into the Excel template
         result_file_name = pushOG(extracted_data , "template3.xlsx")
+
+        # Return the result Excel file as a response
+        return FileResponse(result_file_name, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename="result.xlsx")
+
+    finally:
+        # Clean up the temporary PDF file
+        os.remove(pdf_path)
+
+
+@app.post("/036")
+async def upload_file_036(file: UploadFile = File(...) , number: str = "0"):
+    # Temporary file to store the uploaded PDF
+    pdf_path = f"temp_{uuid.uuid4().hex}.pdf"
+
+    with open(pdf_path, "wb") as f:
+        f.write(await file.read())
+
+    try:
+
+        # Process the extracted data and push it into the Excel template
+        result_file_name = push036(pdf_path , number)
 
         # Return the result Excel file as a response
         return FileResponse(result_file_name, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename="result.xlsx")

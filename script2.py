@@ -3,9 +3,7 @@ from decimal import Decimal
 import openpyxl
 import re
 from collections import defaultdict
-import os
-from fastapi.middleware.cors import CORSMiddleware
-import uuid
+
 
 
 def regex(text):
