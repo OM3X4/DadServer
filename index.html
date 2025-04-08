@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF to Generate Excel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            gap: 30px;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #responseMessage {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload PDF to Generate Excel</h2>
+        <input type="file" id="pdfFile" accept="application/pdf" />
+        <br>
+        <label>
+            <input type="checkbox" id="toggleUrl">Multiple Injections
+        </label>
+        <br>
+        <button id="uploadBtn">Upload and Generate Excel</button>
+        <div id="responseMessage"></div>
+    </div>
+    <div class="container">
+        <h2>0-3-6</h2>
+        <input type="file" id="pdfFile036" accept="application/pdf" />
+        <br>
+
+        <input type="radio" name="036" id="0" value="0" checked>0
+        <input type="radio" name="036" id="3" value="3">3
+        <input type="radio" name="036" id="6" value="6">6
+
+        <br>
+        <button id="uploadBtn036">Upload and Generate Excel</button>
+        <div id="responseMessage036"></div>
+    </div>
+    <div class="container">
+        <h2>Excel To Word</h2>
+        <input type="file" id="pdfFileWord" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+
+        <br>
+        <button id="uploadBtnWord">Upload and Generate Excel</button>
+        <div id="responseMessageWord"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadBtn').addEventListener('click', async function() {
+            const fileInput = document.getElementById('pdfFile');
+            const file = fileInput.files[0];
+            const toggleUrl = document.getElementById('toggleUrl').checked;
+            const uploadUrl = toggleUrl ? '/upload' : '/uploadog';
+
+            if (!file) {
+                alert('Please select a file first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show the user that the upload is in progress
+            document.getElementById('responseMessage').textContent = 'Uploading... Please wait.';
+
+            try {
+                const response = await fetch(`https://dadserver-production.up.railway.app${uploadUrl}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Something went wrong with the file upload');
+                }
+
+                // Get the file as a blob and trigger a download
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'result.xlsx';  // File name for the download
+                link.click();
+
+                document.getElementById('responseMessage').textContent = 'Download started!';
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'Error uploading file!';
+            }
+        });
+        document.getElementById('uploadBtn036').addEventListener('click', async function() {
+            const fileInput = document.getElementById('pdfFile036');
+            const file = fileInput.files[0];
+            const toggleUrl = document.getElementById('toggleUrl').checked;
+            const selected036 = document.querySelector('input[name="036"]:checked').value;
+            const uploadUrl = `/036?number=${selected036}`;
+
+            if (!file) {
+                alert('Please select a file first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show the user that the upload is in progress
+            document.getElementById('responseMessage036').textContent = 'Uploading... Please wait.';
+
+
+            // https://dadserver-production.up.railway.app
+
+            console.log(uploadUrl)
+
+            try {
+                const response = await fetch(`https://dadserver-production.up.railway.app${uploadUrl}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Something went wrong with the file upload');
+                }
+
+                // Get the file as a blob and trigger a download
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'result.xlsx';  // File name for the download
+                link.click();
+
+                document.getElementById('responseMessage').textContent = 'Download started!';
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'Error uploading file!';
+            }
+        });
+        document.getElementById('uploadBtnWord').addEventListener('click', async function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('pdfFileWord');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show the user that the upload is in progress
+            document.getElementById('responseMessageWord').textContent = 'Uploading... Please wait.';
+
+
+            // https://dadserver-production.up.railway.app
+
+
+            try {
+                const response = await fetch(`https://dadserver-production.up.railway.app/word`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Something went wrong with the file upload');
+                }
+
+                // Get the file as a blob and trigger a download
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'result.docx';  // File name for the download
+                link.click();
+
+                document.getElementById('responseMessage').textContent = 'Download started!';
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'Error uploading file!';
+            }
+        });
+    </script>
+</body>
+</html>

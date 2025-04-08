@@ -8,6 +8,7 @@ from collections import defaultdict
 import os
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
+from docsApp import pushToWord
 
 from app036 import push as push036
 
@@ -299,3 +300,25 @@ async def upload_file_036(file: UploadFile = File(...) , number: str = "0"):
     finally:
         # Clean up the temporary PDF file
         os.remove(pdf_path)
+
+
+@app.post("/word")
+async def word(file: UploadFile = File(...)):
+    # Temporary file to store the uploaded PDF
+    word_path = f"temp_{uuid.uuid4().hex}.docx"
+
+    with open(word_path, "wb") as f:
+        f.write(await file.read())
+
+    try:
+
+        # Process the extracted data and push it into the Excel template
+        result_file_name = pushToWord(word_path)
+
+        # Return the result Excel file as a response
+        return FileResponse(result_file_name, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document", filename="resultWord.docx")
+
+    finally:
+        # Clean up the temporary PDF file
+        os.remove(word_path)
+
